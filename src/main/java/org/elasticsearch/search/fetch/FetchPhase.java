@@ -177,9 +177,11 @@ public class FetchPhase implements SearchPhase {
 
             final InternalSearchHit searchHit;
             try {
-                int rootDocId = findRootDocumentIfNested(context, subReaderContext, subDocId);
-                if (rootDocId != -1) {
-                    searchHit = createNestedSearchHit(context, docId, subDocId, rootDocId, extractFieldNames, loadAllStored, fieldNames, subReaderContext);
+                int rootSubDocId = findRootDocumentIfNested(context, subReaderContext, subDocId);
+                if (rootSubDocId != -1) {
+                    docId = docId + rootSubDocId - subDocId;
+                    subDocId = rootSubDocId;
+                    searchHit = createSearchHit(context, fieldsVisitor, docId, subDocId, extractFieldNames, subReaderContext);
                 } else {
                     searchHit = createSearchHit(context, fieldsVisitor, docId, subDocId, extractFieldNames, subReaderContext);
                 }
